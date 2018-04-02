@@ -1,0 +1,5 @@
+
+export FB_MULTI_BUFFER=4
+export QT_QPA_PLATFORM=eglfs
+export QT_QPA_EGLFS_FORCEVSYNC=1
+export QT_NO_FT_CACHE=1
