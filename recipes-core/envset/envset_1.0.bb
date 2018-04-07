@@ -7,7 +7,8 @@ SRC_URI = "file://qt5.sh \
            file://LICENSE \
 "
 
+S = "${WORKDIR}"
 do_install_append () {
 	install -d ${D}${sysconfdir}/profile.d/
-	install -m 0755 ${WORKDIR}/qt5.sh ${D}${sysconfdir}/profile.d/
+	install -m 0644 ${WORKDIR}/qt5.sh ${D}${sysconfdir}/profile.d/
 }
