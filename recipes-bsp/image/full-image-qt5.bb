@@ -11,6 +11,18 @@ IMAGE_INSTALL_remove += " \
 	opencv \
 "
 
+## Select Image Features
+IMAGE_FEATURES += " \
+    tools-profile \
+    splash \
+    ssh-server-dropbear \
+    hwcodecs \
+"
+CORE_IMAGE_EXTRA_INSTALL += " \
+    packagegroup-core-full-cmdline \
+    packagegroup-fsl-tools-audio \
+"
+
 QT5_IMAGE_INSTALL_mx6 = " \
 	imx-qtapplications \
 	packagegroup-qt5-toolchain-target \
