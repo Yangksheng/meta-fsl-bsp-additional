@@ -36,4 +36,5 @@ IMAGE_INSTALL += " \
 	udev \
 	udev-extraconf \
 	fsl-rc-local \
+	envset \
 "
