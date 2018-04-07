@@ -7,6 +7,7 @@ SRC_URI = "git://github.com/Yangksheng/linux-imx.git;branch=${SRCBRANCH} \
 "
 
 LOCALVERSION = "-ga"
+SRCREV = ""
 
 PE = "1"
 PR = "r0"
