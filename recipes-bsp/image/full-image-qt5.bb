@@ -37,4 +37,5 @@ IMAGE_INSTALL += " \
 	udev-extraconf \
 	fsl-rc-local \
 	envset \
+	i2c-tools \
 "
