@@ -1,0 +1,119 @@
+From 575fe913f6b6b81421f7bfda7c72ab8c15ecb8e3 Mon Sep 17 00:00:00 2001
+From: Lukas Berk <lberk@redhat.com>
+Date: Mon, 30 Jan 2017 10:14:24 -0500
+Subject: [PATCH] Fix -Wimplicit-fallthrough build errors
+
+GCC7 will now error implicit fallthrough's as per sourceware.org/PR7652
+---
+ dwflpp.cxx    | 6 ++++--
+ loc2c.c       | 1 +
+ staptree.cxx  | 2 ++
+ stapvirt.c    | 1 +
+ tapsets.cxx   | 2 +-
+ translate.cxx | 2 ++
+ 6 files changed, 11 insertions(+), 3 deletions(-)
+
+diff --git a/dwflpp.cxx b/dwflpp.cxx
+index 92535cb..47523e3 100644
+--- a/dwflpp.cxx
++++ b/dwflpp.cxx
+@@ -3516,7 +3516,8 @@ dwflpp::translate_components(struct obstack *pool,
+               dwarf_die_type (typedie, typedie, c.tok);
+               break;
+             }
+-          /* else fall through as an array access */
++	  /* Fallthrough */
++          /* else an array access */
+ 
+         case DW_TAG_array_type:
+           if (c.type == target_symbol::comp_literal_array_index)
+@@ -3741,7 +3742,8 @@ dwflpp::translate_final_fetch_or_store (struct obstack *pool,
+                                      dwarf_type_name(typedie).c_str()), e->tok);
+           }
+       }
+-      // Fallthrough. enumeration_types are always scalar.
++      /* Fallthrough */
++      // enumeration_types are always scalar.
+     case DW_TAG_enumeration_type:
+ 
+       l2c_ctx.die = vardie;
+diff --git a/loc2c.c b/loc2c.c
+index 9b4c892..adeb0bc 100644
+--- a/loc2c.c
++++ b/loc2c.c
+@@ -2561,6 +2561,7 @@ c_emit_location (FILE *out, struct location *loc, int indent,
+ 	  break;
+ 	declared_addr = true;
+ 	l->address.declare = "addr";
++	/* Fallthrough */
+       case loc_fragment:
+       case loc_final:
+ 	if (l->address.declare != NULL)
+diff --git a/staptree.cxx b/staptree.cxx
+index 936ce0a..3b0b359 100644
+--- a/staptree.cxx
++++ b/staptree.cxx
+@@ -1020,6 +1020,7 @@ print_format::string_to_components(string const & str)
+ 	case 'd':
+ 	case 'i':
+ 	  curr.set_flag (fmt_flag_sign);
++	  /* Fallthrough */
+ 	case 'u':
+ 	  curr.type = conv_number;
+ 	  curr.base = 10;
+@@ -1032,6 +1033,7 @@ print_format::string_to_components(string const & str)
+ 
+ 	case 'X':
+ 	  curr.set_flag (fmt_flag_large);
++	  /* Fallthrough */
+ 	case 'x':
+ 	  curr.type = conv_number;
+ 	  curr.base = 16;
+diff --git a/stapvirt.c b/stapvirt.c
+index ba35229..57e41ba 100644
+--- a/stapvirt.c
++++ b/stapvirt.c
+@@ -1297,6 +1297,7 @@ parse_args(int argc, char* const argv[])
+             break;
+         case 'h':
+             usage(0); // no return
++	    /* Fallthrough */
+         case 'v':
+             verbose++;
+             break;
+diff --git a/tapsets.cxx b/tapsets.cxx
+index 8a8bdb3..6c87110 100644
+--- a/tapsets.cxx
++++ b/tapsets.cxx
+@@ -2488,7 +2488,7 @@ validate_module_elf (Dwfl_Module *mod, const char *name,  base_query *q)
+     case EM_386:
+       expect_machine = "i?86";
+       if (! q->has_process) break; // 32-bit kernel/module
+-      /* FALLSTHROUGH */
++      /* Fallthrough */
+     case EM_X86_64:
+       expect_machine2 = "x86_64";
+       break;
+diff --git a/translate.cxx b/translate.cxx
+index 53292b4..62f5922 100644
+--- a/translate.cxx
++++ b/translate.cxx
+@@ -1373,6 +1373,7 @@ c_unparser::emit_compiled_printfs ()
+ 			<< c->base << ", width, precision, " << c->flags << ");";
+ 		      break;
+ 		    }
++		  /* Fallthrough */
+ 		  // else fall-through to conv_number
+ 		case print_format::conv_number:
+ 		  o->newline() << "num_bytes += number_size(" << value << ", "
+@@ -1478,6 +1479,7 @@ c_unparser::emit_compiled_printfs ()
+ 		    << c->base << ", width, precision, " << c->flags << ");";
+ 		  break;
+ 		}
++	      /* Fallthrough */
+ 	      // else fall-through to conv_number
+ 	    case print_format::conv_number:
+ 	      o->newline() << "str = number(str, end, " << value << ", "
+-- 
+2.9.3
+
